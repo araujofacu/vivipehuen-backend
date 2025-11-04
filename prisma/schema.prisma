@@ -1,0 +1,47 @@
+// prisma/schema.prisma
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// Esto es tu "models.TextChoices" o "models.CharField(choices=...)"
+// Define los únicos valores válidos para el campo 'role'.
+enum Role {
+  ADMIN
+  PROPIETARIO
+  COMERCIO
+}
+
+// Este es tu nuevo "class User(models.Model):"
+model User {
+  // id = models.AutoField(primary_key=True)
+  id        Int      @id @default(autoincrement())
+  
+  // email = models.EmailField(unique=True)
+  email     String   @unique
+  
+  // password = models.CharField(max_length=...)
+  // Lo guardaremos hasheado (con bcrypt)
+  password  String
+  
+  // name = models.CharField(max_length=100, null=True, blank=True)
+  name      String?
+  
+  // role = models.CharField(choices=Role.choices, default=Role.PROPIETARIO)
+  role      Role     @default(PROPIETARIO)
+  
+  // created_at = models.DateTimeField(auto_now_add=True)
+  createdAt DateTime @default(now()) @map("created_at")
+  
+  // updated_at = models.DateTimeField(auto_now=True)
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  // --- Relaciones (las añadiremos después) ---
+  // alquileres = models.ForeignKey(..., related_name='propietario')
+  // comercio = models.OneToOneField(..., related_name='propietario')
+}

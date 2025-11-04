@@ -1,0 +1,25 @@
+# docker-compose.yml
+version: '3.8'
+
+services:
+  # Este es el nombre de nuestro servicio
+  postgres_db:
+    # Usamos la imagen oficial de Postgres
+    image: postgres
+    
+    # Reinicia automáticamente si falla
+    restart: always
+    
+    # Estas son las variables de entorno para crear la BBDD
+    environment:
+      POSTGRES_USER: u_pehuen      # Usuario
+      POSTGRES_PASSWORD: 123654     # Contraseña
+      POSTGRES_DB: vivi_pehuen_db # Nombre de la BBDD
+    
+    # Mapea el puerto de tu máquina (izquierda) al del contenedor (derecha)
+    ports:
+      - "5432:5432"
+      
+    # Esto guarda los datos en tu disco para que no se pierdan al reiniciar
+    volumes:
+      - ./postgres_data:/var/lib/postgresql
