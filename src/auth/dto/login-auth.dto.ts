@@ -1,20 +1,18 @@
-// src/auth/dto/login-auth.dto.ts
+import { ApiProperty } from '@nestjs/swagger';
 import { IsEmail, IsNotEmpty, IsString } from 'class-validator';
 
-/*
- * 🐍 TRADUCCIÓN: Esto es tu "class LoginSerializer(serializers.Serializer):"
- */
 export class LoginAuthDto {
-  /*
-   * email = serializers.EmailField()
-   */
+  @ApiProperty({
+    description: 'El email del usuario registrado',
+    example: 'propietario1@prueba.com',
+  })
   @IsEmail()
   email: string;
 
-  /*
-   * password = serializers.CharField()
-   * (No necesitamos MinLength aquí, solo que no esté vacío)
-   */
+  @ApiProperty({
+    description: 'La contraseña del usuario',
+    example: 'S3cretPassw0rd!',
+  })
   @IsString()
   @IsNotEmpty({ message: 'La contraseña no puede estar vacía' })
   password: string;

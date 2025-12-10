@@ -1,4 +1,3 @@
-// prisma/schema.prisma
 
 generator client {
   provider = "prisma-client-js"
@@ -9,39 +8,61 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-// Esto es tu "models.TextChoices" o "models.CharField(choices=...)"
-// Define los únicos valores válidos para el campo 'role'.
 enum Role {
   ADMIN
   PROPIETARIO
   COMERCIO
 }
 
-// Este es tu nuevo "class User(models.Model):"
 model User {
-  // id = models.AutoField(primary_key=True)
-  id        Int      @id @default(autoincrement())
-  
-  // email = models.EmailField(unique=True)
-  email     String   @unique
-  
-  // password = models.CharField(max_length=...)
-  // Lo guardaremos hasheado (con bcrypt)
-  password  String
-  
-  // name = models.CharField(max_length=100, null=True, blank=True)
-  name      String?
-  
-  // role = models.CharField(choices=Role.choices, default=Role.PROPIETARIO)
-  role      Role     @default(PROPIETARIO)
-  
-  // created_at = models.DateTimeField(auto_now_add=True)
-  createdAt DateTime @default(now()) @map("created_at")
-  
-  // updated_at = models.DateTimeField(auto_now=True)
-  updatedAt DateTime @updatedAt @map("updated_at")
+  id         Int        @id @default(autoincrement())
+  email      String     @unique
+  password   String
+  name       String?
+  role       Role       @default(PROPIETARIO)
+  createdAt  DateTime   @default(now()) @map("created_at")
+  updatedAt  DateTime   @updatedAt @map("updated_at")
+  alquileres Alquiler[]
+  comercios  Comercio[]
+}
 
-  // --- Relaciones (las añadiremos después) ---
-  // alquileres = models.ForeignKey(..., related_name='propietario')
-  // comercio = models.OneToOneField(..., related_name='propietario')
+model Alquiler {
+  id          Int     @id @default(autoincrement())
+  titulo      String
+  descripcion String?
+
+  capacidad         Int     @default(1)
+  dormitorios       Int     @default(1)
+  camas             Int     @default(1)
+  petFriendly       Boolean @default(false) @map("pet_friendly")
+  pileta            Boolean @default(false)
+  parrilla          Boolean @default(false)
+  wifi              Boolean @default(false)
+  cochera           Boolean @default(false)
+  aireAcondicionado Boolean @default(false) @map("aire_acondicionado")
+  vistaAlMar        Boolean @default(false) @map("vista_al_mar")
+  distanciaPlaya    Int?    @map("distancia_playa")
+
+  detalles Json?
+  
+  fotos    String[]
+
+  propietario   User     @relation(fields: [propietarioId], references: [id])
+  propietarioId Int      @map("propietario_id")
+  createdAt     DateTime @default(now()) @map("created_at")
+  updatedAt     DateTime @updatedAt @map("updated_at")
+}
+
+model Comercio {
+  id            Int      @id @default(autoincrement())
+  nombre        String
+  descripcion   String?
+  fotos         String[]
+  horarios      String?
+  mediosDePago  String[] @map("medios_de_pago")
+  links         Json?
+  propietario   User     @relation(fields: [propietarioId], references: [id])
+  propietarioId Int      @map("propietario_id")
+  createdAt     DateTime @default(now()) @map("created_at")
+  updatedAt     DateTime @updatedAt @map("updated_at")
 }
